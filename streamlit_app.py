@@ -1,8 +1,9 @@
 import streamlit as st
 from openai import OpenAI
+import PyPDF2
 
 # Show title and description.
-st.title("📄 Document question answering")
+st.title("MY Document question answering")
 st.write(
     "Upload a document below and ask a question about it – GPT will answer! "
     "To use this app, you need to provide an OpenAI API key, which you can get [here](https://platform.openai.com/account/api-keys). "
@@ -15,15 +16,23 @@ openai_api_key = st.text_input("OpenAI API Key", type="password")
 if not openai_api_key:
     st.info("Please add your OpenAI API key to continue.", icon="🗝️")
 else:
-
-    # Create an OpenAI client.
-    client = OpenAI(api_key=openai_api_key)
+    try:
+        client = OpenAI(api_key=openai_api_key)
+        client.models.list()
+    except:
+        st.error("API key not valid ")
+        st.stop()
 
     # Let the user upload a file via `st.file_uploader`.
-    uploaded_file = st.file_uploader(
-        "Upload a document (.txt or .md)", type=("txt", "md")
-    )
-
+    uploaded_file = st.file_uploader("Upload a document (.txt or .pdf)", type = ("txt", "pdf"))
+    
+    def read_pdf(uploaded_pdf):
+        reader = PyPDF2.PdfReader(uploaded_pdf)
+        text = ""
+        for page in reader.pages:
+            text += page.extract_text() or ""
+        return text
+    
     # Ask the user for a question via `st.text_area`.
     question = st.text_area(
         "Now ask a question about the document!",
@@ -32,9 +41,14 @@ else:
     )
 
     if uploaded_file and question:
-
+        file_extension = uploaded_file.name.split('.')[-1]
+        if file_extension == 'txt':
+            document = uploaded_file.read().decode()
+        elif file_extension == 'pdf':
+            document = read_pdf(uploaded_file)
+        else:
+            st.error("Unsupported file type.")
         # Process the uploaded file and question.
-        document = uploaded_file.read().decode()
         messages = [
             {
                 "role": "user",
@@ -44,7 +58,7 @@ else:
 
         # Generate an answer using the OpenAI API.
         stream = client.chat.completions.create(
-            model="gpt-3.5-turbo",
+            model="gpt-5-nano",
             messages=messages,
             stream=True,
         )
