@@ -54,7 +54,7 @@ if prompt := st.chat_input("What is up?"):
             url1_text = read_url_content(url1)
             url_text += f'url 1 content: {url1_text}'
         if url2:
-            url2_text = read_url_content(url1)
+            url2_text = read_url_content(url2)
             url_text += f'url 2 content: {url2_text}'
         url_prompt = [{"role": "user", "content": f"URL TEXT: \n{url_text}"}]
     
