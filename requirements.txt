@@ -4,3 +4,7 @@ PyPDF2
 requests
 bs4
 anthropic 
+chromadb
+pysqlite3-binary
+protobuf==3.20
+bs4 
