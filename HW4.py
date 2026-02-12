@@ -101,7 +101,7 @@ if collection.count == 0:
         load_htmls_to_collection("./HW4_HTML_Data/", collection)
         st.session_state.HW4_VectorDB = collection
 
-st.title('Lab 4: Chatbot using RAG')
+st.title('HW4: Chatbot using RAG')
 
 for msg in st.session_state.messages:
     chat_msg = st.chat_message(msg["role"])
