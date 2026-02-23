@@ -60,7 +60,7 @@ def load_pdfs_to_collection(folder_path: str, collection):
             pass
     return loaded
 
-def relevant_course_info(query: str, collection, n_results: int = 3) -> str:
+def relevant_course_info(query: str, collection, n_results: int = 3):
     client = st.session_state.openai_client
     emb = client.embeddings.create(
         input=query,
